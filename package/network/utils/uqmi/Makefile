@@ -1,19 +1,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=uqmi
-PKG_RELEASE:=5
+PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=$(PROJECT_GIT)/project/uqmi.git
-PKG_SOURCE_DATE:=2016-12-19
-PKG_SOURCE_VERSION:=8ceeab690d8c6f1e3afbd4bcaee7bc2ba3fbe165
-PKG_MIRROR_HASH:=b3637ff04e51769137af1c5e173e73311e11c3c2dcc49eeaca6aa3520f61d247
+PKG_SOURCE_DATE:=2022-05-04
+PKG_SOURCE_VERSION:=56cb2d4056fef132ccf78dfb6f3074ae5d109992
+PKG_MIRROR_HASH:=cc832b5318805df8c8387a3650f250dee72d5f1dbda4e4866b5503e186b2210c
 PKG_MAINTAINER:=Matti Laakso <malaakso@elisanet.fi>
 
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=
-
-PKG_BUILD_PARALLEL:=1
 
 PKG_FLAGS:=nonshared
 
@@ -33,8 +31,11 @@ define Package/uqmi/description
   the QMI-protocol.
 endef
 
-TARGET_CFLAGS += \
-	-I$(STAGING_DIR)/usr/include -ffunction-sections -fdata-sections
+TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include -ffunction-sections -fdata-sections
+
+ifneq (,$(findstring $(GCC_MAJOR_VERSION), 12 13))
+	TARGET_CFLAGS += -Wno-error=dangling-pointer -Wno-error=maybe-uninitialized
+endif
 
 TARGET_LDFLAGS += -Wl,--gc-sections
 
